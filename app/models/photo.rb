@@ -30,9 +30,9 @@ class Photo < ApplicationRecord
   # Photo#fans: returns rows from the users table associated to this photo through its likes
 
   belongs_to(:poster, :class_name => "User", :foreign_key => "owner_id")
-  has_mane(:comments, :class_name => "Comment", :foreign_key => "photo_id")
+  has_many(:comments, :class_name => "Comment", :foreign_key => "photo_id")
   has_many(:likes, :class_name => "Like", :foreign_key => "photo_id")
-  has_many(:fans, :through => :likes, :source => :fan)
+ 
 
   # def poster
   #   my_owner_id = self.owner_id
@@ -60,19 +60,21 @@ class Photo < ApplicationRecord
   #   return matching_likes
   # end
 
-  def fans
-    my_likes = self.likes
+  has_many(:fans, :through => :likes, :source => "fan")
+
+  # def fans
+  #   my_likes = self.likes
     
-    array_of_user_ids = Array.new
+  #   array_of_user_ids = Array.new
 
-    my_likes.each do |a_like|
-      array_of_user_ids.push(a_like.fan_id)
-    end
+  #   my_likes.each do |a_like|
+  #     array_of_user_ids.push(a_like.fan_id)
+  #   end
 
-    matching_users = User.where({ :id => array_of_user_ids })
+  #   matching_users = User.where({ :id => array_of_user_ids })
 
-    return matching_users
-  end
+  #   return matching_users
+  # end
 
 
   def fan_list
@@ -88,4 +90,5 @@ class Photo < ApplicationRecord
 
     return formatted_usernames
   end
+
 end
